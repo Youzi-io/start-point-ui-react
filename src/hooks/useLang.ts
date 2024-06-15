@@ -1,5 +1,5 @@
+import { langKey } from "@/locales";
 import { Locale } from "antd/es/locale";
-import { ResourceKey } from "i18next";
 import { useTranslation } from "react-i18next";
 
 interface LangResource {
@@ -7,8 +7,8 @@ interface LangResource {
 }
 
 interface LangList {
-  content: ResourceKey;
-  value: string;
+  key: string;
+  label: string;
 }
 
 export const useLang = () => {
@@ -24,6 +24,7 @@ export const useLang = () => {
   // 切换语言
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    localStorage.setItem(langKey, lng);
   };
 
   // 获取语言列表
@@ -32,12 +33,17 @@ export const useLang = () => {
     const langAllResource = i18n.services.resourceStore.data;
     Object.keys(langAllResource).forEach((key) => {
       langList.push({
-        content: langAllResource[key].lang,
-        value: key,
+        label: langAllResource[key].lang as string,
+        key: key,
       });
     });
     return langList;
   };
 
-  return { t, i18n, antdLang, changeLanguage, getLangList };
+  // 获取当前系统记录的语言
+  const getCurSysLang = () => {
+    return localStorage.getItem(langKey) || "zh_CN";
+  };
+
+  return { t, i18n, antdLang, changeLanguage, getLangList, getCurSysLang };
 };

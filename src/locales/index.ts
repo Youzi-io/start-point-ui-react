@@ -13,7 +13,7 @@ const langModules: Record<string, Module> = import.meta.glob(
 
 const langModuleMap = new Map<string, Module>();
 
-const langKey: string = "start-point-lang";
+export const langKey: string = "start-point-lang";
 
 // 生成语言模块列表
 const generateLangModuleMap = () => {
