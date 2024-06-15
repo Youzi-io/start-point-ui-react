@@ -1,0 +1,31 @@
+.option-list {
+  background-color: #ffffff;
+  @include divInitialization();
+
+  &-item {
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+
+      > .option-icon {
+        animation: headerOperateScale 0.3s ease-in-out 1;
+      }
+    }
+  }
+}
+
+@keyframes headerOperateScale {
+  0% {
+    transform: scale(0);
+  }
+
+  90% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
