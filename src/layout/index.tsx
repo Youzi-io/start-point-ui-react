@@ -2,7 +2,7 @@ import { Layout, theme } from "antd";
 import { useState } from "react";
 import SiderContent from "./components/SiderContent";
 import HeaderContent from "./components/HeaderContent";
-import "./index.module.scss";
+import styles from "./index.module.scss";
 
 const { Header, Sider, Content } = Layout;
 
@@ -18,7 +18,7 @@ const BasicLayout = () => {
   return (
     <Layout className="min-h-screen max-h-screen overflow-hidden">
       <Sider
-        className="mix-h-[calc(100vh-20px-48px)] overflow-y-auto ml-[10px] my-[10px] rounded-[5px] shadow-[0_0_12px_rgba(0,0,0,0.12)]"
+        className={`mix-h-[calc(100vh-20px-48px)] overflow-y-auto m-[10px_0_10px_10px] ${styles["sider"]}`}
         collapsible
         collapsed={collapsed}
         onCollapse={toggleCollapsed}
