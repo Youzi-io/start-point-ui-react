@@ -1,0 +1,36 @@
+.tag-list-item {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.close-icon {
+  width: 18px;
+  height: 18px;
+  margin: 0 5px;
+  overflow: hidden;
+
+  &:hover {
+    border-radius: 50%;
+    background-color: red;
+    color: #fff;
+  }
+}
+
+.tag-active-box {
+  background-color: #fff;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  transition: all 0.3s;
+  @include divInitialization();
+}
+
+.tag-dropdown-box {
+  @include divInitialization();
+}
