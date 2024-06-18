@@ -67,7 +67,6 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.preventDefault();
-    console.log(event);
     setTagMenu(true);
     setTagDropdownSite({
       x: event.pageX,
@@ -179,8 +178,8 @@ const TagDropdownMenu = ({ x, y, close }: TagDropdownMenuProps) => {
 
   useEffect(() => {
     const focusTagMenu = (event: MouseEvent) => {
-      const clickedElement = event.target as Node; // 获取被点击的元素
-      if (tagDropdownMenuRef.current) {
+      const clickedElement = event.target; // 获取被点击的元素
+      if (tagDropdownMenuRef.current && clickedElement instanceof Node) {
         if (!tagDropdownMenuRef.current.contains(clickedElement)) {
           close && close();
         }
