@@ -1,60 +1,61 @@
-import type { PageParams } from '../page'
+import type { PageParams } from "../comm/page";
 
 export interface DictDataInfo {
   /*字典编号 */
-  id: string
+  id: string;
 
   /*字典类型 */
-  dictType: string
+  dictType: string;
 
   /*字典编码 */
-  dictCode?: number
+  dictCode?: number;
 
   /*字典标签 */
-  dictTag: string
+  dictTag: string;
 
   /*字典键值 */
-  dictValue: string
+  dictValue: string;
 
   /*字典排序 */
-  dictOrder: number
+  dictOrder: number;
 
   /*回显样式 */
-  listClass: 'default' | 'error' | 'primary' | 'info' | 'success' | 'warning'
+  listClass: "default" | "error" | "primary" | "info" | "success" | "warning";
 
   /*备注 */
-  remark: string
+  remark: string;
 
   /*状态 */
-  status: string
+  status: string;
 
   /*逻辑删除 */
-  isDelete?: string
+  isDelete?: string;
 
   /*创建时间 */
-  createTime?: string
+  createTime?: string;
 
   /*修改时间 */
-  updateTime?: string
+  updateTime?: string;
 }
 
 export interface DictDataInfoRes extends DictDataInfo {}
 
 export interface GetDictDataParams extends PageParams {
   /*字典类型 */
-  dictType?: string
+  dictType?: string;
 
   /*字典标签 */
-  dictTag?: string
+  dictTag?: string;
 
   /*状态 */
-  status?: string | null
+  status?: string | null;
 }
 
-type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime'
-export interface AddDictDataParams extends Omit<DictDataInfoRes, OmitAddIrrelevantFields> {}
+type OmitAddIrrelevantFields = "id" | "createTime" | "updateTime";
+export interface AddDictDataParams
+  extends Omit<DictDataInfoRes, OmitAddIrrelevantFields> {}
 
 export interface EditDictDataParams extends AddDictDataParams {
   /*用户编号 */
-  id: string
+  id: string;
 }

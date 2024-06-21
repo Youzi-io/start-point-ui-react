@@ -1,78 +1,79 @@
-import type { PageParams } from '../page'
+import type { PageParams } from "../comm/page";
 
 export interface RoutesInfo {
   /*路由编号 */
-  id: string
+  id: string;
 
   /*页面标题 */
-  title: string
+  title: string;
 
   /*路由名称 */
-  routesName: string
+  routesName: string;
 
   /*图标 */
-  icon?: string
+  icon?: string;
 
   /*路由地址 */
-  fullPath: string
+  fullPath: string;
 
   /*组件路径 */
-  componentPath?: string
+  componentPath?: string;
 
   /*父级菜单编号  */
-  parentId?: string | null
+  parentId?: string | null;
 
   /*显示状态 */
-  showStatus?: string
+  showStatus?: string;
 
   /*是否为外链 */
-  isExternalLink?: string
+  isExternalLink?: string;
 
   /*是否缓存 */
-  keepAlive?: string
+  keepAlive?: string;
 
   /*状态 */
-  status?: string
+  status?: string;
 
   /*菜单类型 */
-  type?: string
+  type?: string;
 
   /*排序 */
-  orderIndex: number
+  orderIndex: number;
 
   /*创建时间 */
-  createTime?: string
+  createTime?: string;
 
   /*修改时间 */
-  updateTime?: string
+  updateTime?: string;
 }
 
 // 响应接口
 export interface RoutesInfoRes extends RoutesInfo {
   /*路由子项 */
-  children?: RoutesInfoRes[]
+  children?: RoutesInfoRes[];
 }
 
 // 查询路由
 export interface GetRoutesParams extends PageParams {
   /*页面标题  */
-  title?: string
+  title?: string;
 
   /*路由地址 */
-  fullPath?: string
+  fullPath?: string;
 
   /*状态 */
-  status?: string | null
+  status?: string | null;
 
   /*是否查询所有 */
-  all?: boolean
+  all?: boolean;
 }
 
-type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime' | 'children'
+type OmitAddIrrelevantFields = "id" | "createTime" | "updateTime" | "children";
 // 添加路由
-export interface AddRoutesParams extends Omit<RoutesInfoRes, OmitAddIrrelevantFields> {}
+export interface AddRoutesParams
+  extends Omit<RoutesInfoRes, OmitAddIrrelevantFields> {}
 
 export interface EditRoutesParams extends AddRoutesParams {
   /*用户编号 */
-  id: string
+  id: string;
 }

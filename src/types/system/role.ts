@@ -1,50 +1,51 @@
-import type { PageParams } from '../page'
+import type { PageParams } from "../comm/page";
 
 export interface RoleInfo {
-  id: string
+  id: string;
 
   /*角色名称 */
-  roleName: string
+  roleName: string;
 
   /*权限字符 */
-  roleKey: string
+  roleKey: string;
 
   /*状态 */
-  status: string
+  status: string;
 
   /*排序 */
-  orderIndex: number
+  orderIndex: number;
 
   /*创建时间 */
-  createTime: string
+  createTime: string;
 
   /*修改时间 */
-  updateTime: string
+  updateTime: string;
 
   /*权限菜单列表 */
-  routesIdList: string[]
+  routesIdList: string[];
 }
 
 export interface RoleInfoRes extends RoleInfo {}
 
 export interface GetRoleParams extends PageParams {
   /*角色名称  */
-  roleName?: string
+  roleName?: string;
 
   /*权限字符 */
-  roleKey?: string
+  roleKey?: string;
 
   /*状态 */
-  status?: string | null
+  status?: string | null;
 
   /*是否查询所有 */
-  all?: boolean
+  all?: boolean;
 }
 
-type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime'
-export interface AddRoleParams extends Omit<RoleInfoRes, OmitAddIrrelevantFields> {}
+type OmitAddIrrelevantFields = "id" | "createTime" | "updateTime";
+export interface AddRoleParams
+  extends Omit<RoleInfoRes, OmitAddIrrelevantFields> {}
 
 export interface EditRoleParams extends AddRoleParams {
   /*用户编号 */
-  id: string
+  id: string;
 }
