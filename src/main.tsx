@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./locales/index";
 import { StyleProvider } from "@ant-design/cssinjs";
 import "./styles/tailwind.css";
+import "./styles/global.scss";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
