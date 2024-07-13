@@ -2,32 +2,13 @@ import MSIcon from "@/components/MSIcon";
 import styles from "./index.module.scss";
 import { useEffect, useRef, useState } from "react";
 import { Button, Flex } from "antd";
+import { useTagStore } from "@/stores/index";
 
 interface HeaderTagProps {
   className?: string;
 }
 const HeaderTag = ({ className }: HeaderTagProps) => {
-  const list = [
-    "仪表盘",
-    "Option 1",
-    "Option 2",
-    "Option 3",
-    "Option 5",
-    "Option 6",
-    "Option 7",
-    "Option 8",
-    "Option 9",
-    "Option 10",
-    "Option 11",
-    "Option 12",
-    "Option 13",
-    "Option 14",
-    "Option 15",
-    "Option 16",
-    "Option 17",
-    "Option 18",
-    "Option 19",
-  ];
+  const { tagList, getTagList } = useTagStore();
 
   const tagRef = useRef<HTMLDivElement>(null);
   const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
@@ -36,11 +17,17 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
     }
   };
 
+  // 当前激活标签索引
   const [tagIndex, setTagIndex] = useState(0);
   const tagItemRef = useRef<HTMLDivElement[]>([]);
 
+  // 当前激活标签宽度
   const [tagWidth, setTagWidth] = useState(0);
+  // 当前激活标签位置偏移量
   const [tagLeftPosition, setTagLeftPosition] = useState(0);
+
+  // 当前右键标签的索引
+  const [contextIndex, setContextIndex] = useState(0);
 
   // 切换标签
   const handleChangeTag = (index: number) => {
@@ -68,6 +55,7 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
   ) => {
     event.preventDefault();
     setTagMenu(true);
+    setContextIndex(index);
     setTagDropdownSite({
       x: event.pageX,
       y: event.pageY,
@@ -75,8 +63,19 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
   };
 
   // 处理标签关闭下拉菜单
-  const handleCloseTagDropdownMenu = () => {
+  const handleCloseDropdownMenu = () => {
     setTagMenu(false);
+  };
+
+  // 处理下拉菜单关闭标签
+  const handleDropdownMenuCloseTag = () => {
+    if (tagIndex === contextIndex) {
+      // 现有bug 当标签只剩2个时，当前标签下标为0 关闭当前标签不触发计算标签宽度方法
+      setTagIndex(getTagList().length - 1);
+      // 跳转路由
+    } else if (tagIndex > contextIndex) {
+      setTagIndex(tagIndex - 1);
+    }
   };
 
   useEffect(() => {
@@ -100,7 +99,7 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
         onWheel={handleScroll}
       >
         <div className={`flex justify-start items-center absolute`}>
-          {list.map((item, index) => (
+          {tagList.map((item, index) => (
             <div
               className={`${styles["tag-list-item"]} p-[10px_16px] cursor-pointer select-none`}
               key={index}
@@ -108,7 +107,7 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
               onClick={() => handleChangeTag(index)}
               onContextMenu={(event) => handleContextMenu(index, event)}
             >
-              {item}
+              {item.title}
               <div
                 className={`${styles["close-icon"]} flex items-center justify-center`}
                 onClick={(event) => handleCloseTag(index, event)}
@@ -130,7 +129,9 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
         <TagDropdownMenu
           x={tagDropdownSite.x}
           y={tagDropdownSite.y}
-          close={handleCloseTagDropdownMenu}
+          closeDropdownMenu={handleCloseDropdownMenu}
+          contextIndex={contextIndex}
+          dropdownMenuCloseTag={handleDropdownMenuCloseTag}
         />
       ) : null}
     </>
@@ -140,7 +141,9 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
 interface TagDropdownMenuProps {
   x?: number;
   y?: number;
-  close?: () => void;
+  closeDropdownMenu?: () => void;
+  contextIndex?: number;
+  dropdownMenuCloseTag?: () => void;
 }
 
 enum TagDropdownMenuOperationEnum {
@@ -150,8 +153,15 @@ enum TagDropdownMenuOperationEnum {
   All = "all",
 }
 
-const TagDropdownMenu = ({ x, y, close }: TagDropdownMenuProps) => {
+const TagDropdownMenu = ({
+  x,
+  y,
+  closeDropdownMenu,
+  contextIndex,
+  dropdownMenuCloseTag,
+}: TagDropdownMenuProps) => {
   const tagDropdownMenuRef = useRef<HTMLDivElement>(null);
+  const { closeTag } = useTagStore();
 
   // 标签下拉菜单操作方法
   const tagDropdownMenuOperation = (type: TagDropdownMenuOperationEnum) => {
@@ -169,10 +179,16 @@ const TagDropdownMenu = ({ x, y, close }: TagDropdownMenuProps) => {
         tagCloseAll();
         break;
     }
+    closeDropdownMenu && closeDropdownMenu();
   };
 
   const tagRefresh = () => {};
-  const tagClose = () => {};
+  const tagClose = () => {
+    if (contextIndex !== undefined) {
+      closeTag(contextIndex);
+      dropdownMenuCloseTag && dropdownMenuCloseTag();
+    }
+  };
   const tagCloseOther = () => {};
   const tagCloseAll = () => {};
 
@@ -181,7 +197,7 @@ const TagDropdownMenu = ({ x, y, close }: TagDropdownMenuProps) => {
       const clickedElement = event.target; // 获取被点击的元素
       if (tagDropdownMenuRef.current && clickedElement instanceof Node) {
         if (!tagDropdownMenuRef.current.contains(clickedElement)) {
-          close && close();
+          closeDropdownMenu && closeDropdownMenu();
         }
       }
     };
@@ -189,7 +205,7 @@ const TagDropdownMenu = ({ x, y, close }: TagDropdownMenuProps) => {
     return () => {
       document.removeEventListener("click", focusTagMenu);
     };
-  }, [close]);
+  }, [closeDropdownMenu]);
 
   return (
     <div
