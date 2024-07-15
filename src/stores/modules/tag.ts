@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export interface TagData {
+interface TagData {
   path: string;
   title: string;
   componentName: string;
