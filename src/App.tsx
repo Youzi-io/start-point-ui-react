@@ -12,11 +12,11 @@ const App: React.FC = () => {
     colorPrimary: "#1677ff",
   };
   const [data] = useState(defaultData);
-  const { getSpan } = useSpinStore();
+  const { getSpan, delay, tip } = useSpinStore();
 
   return (
     <ConfigProvider locale={antdLang} theme={{ token: data }}>
-      <Spin spinning={getSpan()}>
+      <Spin spinning={getSpan()} delay={delay} tip={tip}>
         <BasicLayout />
       </Spin>
     </ConfigProvider>

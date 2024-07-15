@@ -4,6 +4,8 @@ export interface SpinState {
   spin: boolean;
   getSpan: () => boolean;
   setSpin: (data: boolean) => void;
+  delay: number;
+  tip: string;
 }
 
 const useSpinStore = create<SpinState>((set, get) => ({
@@ -12,6 +14,8 @@ const useSpinStore = create<SpinState>((set, get) => ({
   setSpin: (data: boolean) => {
     set({ spin: data });
   },
+  delay: 1000,
+  tip: "加载中...",
 }));
 
 export default useSpinStore;
