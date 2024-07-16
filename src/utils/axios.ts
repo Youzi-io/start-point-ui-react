@@ -91,7 +91,7 @@ export default function createAxios<T>(
         loadingInstance.count++;
         if (loadingInstance.count === 1) {
           loadingInstance.target = useSpinStore();
-          loadingInstance.target.setSpin(true);
+          loadingInstance.target.setLocalSpan(true);
         }
       }
       // 携带token
@@ -253,7 +253,7 @@ function closeLoading(options: Options) {
   if (options.loading && loadingInstance.count > 0) loadingInstance.count--;
   if (loadingInstance.count === 0) {
     if (loadingInstance.target) {
-      loadingInstance.target.setSpin(false);
+      loadingInstance.target.setLocalSpan(false);
     }
     loadingInstance.target = null;
   }

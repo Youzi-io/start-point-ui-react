@@ -1,21 +1,33 @@
 import { create } from "zustand";
 
 export interface SpinState {
-  spin: boolean;
-  getSpan: () => boolean;
-  setSpin: (data: boolean) => void;
-  delay: number;
-  tip: string;
+  globalSpin: boolean;
+  getGlobalSpan: () => boolean;
+  setGlobalSpan: (data: boolean) => void;
+  globalDelay: number;
+  globalTip: string;
+  localSpin: boolean;
+  getLocalSpan: () => boolean;
+  setLocalSpan: (data: boolean) => void;
+  localDelay: number;
+  localTip: string;
 }
 
 const useSpinStore = create<SpinState>((set, get) => ({
-  spin: false,
-  getSpan: () => get().spin,
-  setSpin: (data: boolean) => {
-    set({ spin: data });
+  globalSpin: false,
+  getGlobalSpan: () => get().globalSpin,
+  setGlobalSpan: (data: boolean) => {
+    set({ globalSpin: data });
   },
-  delay: 1000,
-  tip: "加载中...",
+  globalDelay: 1000,
+  globalTip: "加载中...",
+  localSpin: false,
+  getLocalSpan: () => get().localSpin,
+  setLocalSpan: (data: boolean) => {
+    set({ localSpin: data });
+  },
+  localDelay: 1000,
+  localTip: "加载中...",
 }));
 
 export default useSpinStore;
