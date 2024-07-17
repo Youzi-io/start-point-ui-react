@@ -1,25 +1,37 @@
-import { ConfigProvider, Spin } from "antd";
-
-import { lazy, useState } from "react";
+import { ConfigProvider, Spin, ThemeConfig } from "antd";
+import { Suspense, useState } from "react";
 import { useLang } from "./hooks/useLang";
 import { useSpinStore } from "./stores";
-
-const BasicLayout = lazy(() => import("@/layout"));
+import { StyleProvider } from "@ant-design/cssinjs";
+import Router from "./router";
 
 const App: React.FC = () => {
   const { antdLang } = useLang();
-  const defaultData = {
-    colorPrimary: "#1677ff",
+
+  const defaultTheme: ThemeConfig = {
+    token: {
+      colorPrimary: "#1677ff",
+    },
   };
-  const [data] = useState(defaultData);
-  const { getSpan, delay, tip } = useSpinStore();
+  const [theme] = useState<ThemeConfig>(defaultTheme);
+
+  const { getGlobalSpan, globalDelay, globalTip } = useSpinStore();
 
   return (
-    <ConfigProvider locale={antdLang} theme={{ token: data }}>
-      <Spin spinning={getSpan()} delay={delay} tip={tip}>
-        <BasicLayout />
-      </Spin>
-    </ConfigProvider>
+    <StyleProvider layer>
+      <Suspense>
+        <ConfigProvider locale={antdLang} theme={theme}>
+          {/* 全局 Spin */}
+          <Spin
+            spinning={getGlobalSpan()}
+            delay={globalDelay}
+            tip={globalTip}
+            fullscreen
+          />
+          <Router />
+        </ConfigProvider>
+      </Suspense>
+    </StyleProvider>
   );
 };
 

@@ -1,17 +1,27 @@
 import ReactDOM from "react-dom/client";
-import Router from "./router/index";
-import { Suspense } from "react";
-import "./locales/index";
-import { StyleProvider } from "@ant-design/cssinjs";
+
+/**
+ * 样式
+ */
 import "./styles/tailwind.css";
 import "./styles/global.scss";
+import "nprogress/nprogress.css";
+
+/**
+ * 工具
+ */
+import "./locales/index";
+
+/**
+ * 组件
+ */
+import App from "./app";
+import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(
-  <StyleProvider layer>
-    <Suspense>
-      <Router />
-    </Suspense>
-  </StyleProvider>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 );
