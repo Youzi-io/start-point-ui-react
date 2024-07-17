@@ -70,7 +70,6 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
   // 处理下拉菜单关闭标签
   const handleDropdownMenuCloseTag = () => {
     if (tagIndex === contextIndex) {
-      // 现有bug 当标签只剩2个时，当前标签下标为0 关闭当前标签不触发计算标签宽度方法
       setTagIndex(getTagList().length - 1);
       // 跳转路由
     } else if (tagIndex > contextIndex) {
@@ -89,7 +88,7 @@ const HeaderTag = ({ className }: HeaderTagProps) => {
       }
     };
     handleActiveTag();
-  }, [tagIndex]);
+  }, [tagIndex, tagList]);
 
   return (
     <>
