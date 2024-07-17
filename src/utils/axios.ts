@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { message as AMessage } from "antd";
-import { SpinState, useSpinStore, useUserStore } from "@/stores";
+import { clearToken, getToken, SpinState, useSpinStore } from "@/stores";
 
 interface Options {
   // 是否开启取消重复请求, 默认为 true
@@ -95,9 +95,8 @@ export default function createAxios<T>(
         }
       }
       // 携带token
-      const { token } = useUserStore();
-      if (token && config.headers) {
-        config.headers.token = token;
+      if (getToken() && config.headers) {
+        config.headers.token = getToken();
       }
       return config;
     },
@@ -138,8 +137,6 @@ export default function createAxios<T>(
  * @param {*} error
  */
 function httpErrorStatusHandle(error: AxiosError) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { clearToken } = useUserStore();
   // 处理被取消的请求
   if (axios.isCancel(error))
     return console.error("请求的重复请求：" + error.message);

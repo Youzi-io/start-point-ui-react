@@ -1,11 +1,13 @@
 import { LoginParams } from "@/types/auth";
 import { Button, Card, Checkbox, Form, Input } from "antd";
-import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 import MSIcon from "@/components/MSIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
+import { getValidateCodeApi, loginApi } from "@/api/auth";
+import { md5 } from "js-md5";
+import { useUserStore } from "@/stores";
 
 const Login = () => {
   return (
@@ -30,25 +32,41 @@ const FormCard = () => {
   const navigate = useNavigate();
   const [imgCode, setImgCode] = useState<string>("");
   const [remember, setRemember] = useState<boolean>(false);
+  const [codeKey, setCodeKey] = useState<string>("");
+  const { setToken } = useUserStore();
 
-  const onFinish = (values: LoginParams) => {
-    console.log("Received values of form: ", values);
-
-    navigate("/");
+  const onFinish = async (values: LoginParams) => {
+    const { account, password, captcha } = values;
+    const params = {
+      account,
+      password: md5(password).toUpperCase(),
+      captcha,
+      codeKey,
+    };
+    const loginResult = await loginApi(params);
+    if (loginResult.code === 200) {
+      setToken(loginResult.data.token);
+      navigate("/");
+    } else {
+      getValidateCode();
+    }
   };
 
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<LoginParams>) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const getValidateCode = () => {
-    setImgCode("");
-    console.log("获取验证码");
+  const getValidateCode = async () => {
+    const result = await getValidateCodeApi();
+    if (result.code === 200) {
+      setImgCode(result.data.codeValue);
+      setCodeKey(result.data.codeKey);
+    }
   };
 
   const rememberChange = (e: CheckboxChangeEvent) => {
     setRemember(e.target.checked);
   };
+
+  useEffect(() => {
+    getValidateCode();
+  }, []);
 
   return (
     <div className={`${styles["form-card"]}`}>
@@ -60,7 +78,6 @@ const FormCard = () => {
           style={{ margin: "25px 0 20px" }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item<LoginParams>
