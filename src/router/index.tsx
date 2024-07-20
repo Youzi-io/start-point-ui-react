@@ -1,69 +1,29 @@
-import { RouteObject, useLocation, useRoutes } from "react-router-dom";
-import { lazy, useEffect } from "react";
-import AuthRouter from "./authRouter";
+import { useLocation, useRoutes } from "react-router-dom";
+import { useEffect } from "react";
 import nProgress from "nprogress";
-
-type RouterAttr = {
-  title?: string;
-  name?: string;
-  children?: IRouteObject[];
-};
-type IRouteObject = RouteObject & RouterAttr;
-
-const BasicLayout = lazy(() => import("@/layout"));
-const Login = lazy(() => import("@/pages/Login/index"));
-const Dashboard = lazy(() => import("@/pages/Dashboard/index"));
-const Error = lazy(() => import("@/pages/Error/index"));
-
-const mainRouteName = "AppMain";
-
-const routes: IRouteObject[] = [
-  {
-    path: "/",
-    name: mainRouteName,
-    element: (
-      <AuthRouter>
-        <BasicLayout />
-      </AuthRouter>
-    ),
-    children: [
-      {
-        index: true,
-        title: "仪表盘",
-        name: "Dashboard",
-        Component: Dashboard,
-      },
-      // {
-      //   path: "*",
-      //   element: <Navigate to="/" replace={true} />,
-      // },
-    ],
-  },
-  {
-    path: "/login",
-    title: "登录",
-    Component: Login,
-  },
-  {
-    path: "*",
-    Component: Error,
-  },
-];
+import baseRouter, { mainRouteName } from "./baseRouter";
+import { useRoutesStore } from "@/stores";
+import { transformRoutes } from "@/utils/routesUtils";
 
 nProgress.configure({
   showSpinner: false,
 });
 
 const Router = () => {
-  const element = useRoutes(routes);
+  const { menuRouters, isAddRoutes, setIsAddRoutes } = useRoutesStore();
   const location = useLocation();
 
   nProgress.start();
-
   useEffect(() => {
+    if (!isAddRoutes) {
+      setIsAddRoutes(true);
+      const index = baseRouter.findIndex((item) => item.name === mainRouteName);
+      baseRouter[index].children = transformRoutes(menuRouters);
+    }
     nProgress.done();
-  }, [location]);
+  }, [isAddRoutes, location, menuRouters, setIsAddRoutes]);
 
+  const element = useRoutes(baseRouter);
   return <>{element}</>;
 };
 export default Router;

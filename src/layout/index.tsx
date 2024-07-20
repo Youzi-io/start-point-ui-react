@@ -3,6 +3,7 @@ import { useState } from "react";
 import SiderContent from "./components/SiderContent";
 import HeaderContent from "./components/HeaderContent";
 import styles from "./index.module.scss";
+import { Outlet } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
@@ -37,7 +38,7 @@ const BasicLayout = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          <Outlet />
         </Content>
       </Layout>
     </Layout>

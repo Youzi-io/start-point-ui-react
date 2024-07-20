@@ -1,9 +1,10 @@
 import { ConfigProvider, Spin, ThemeConfig } from "antd";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useLang } from "./hooks/useLang";
-import { useSpinStore } from "./stores";
+import { useRoutesStore, useSpinStore } from "./stores";
 import { StyleProvider } from "@ant-design/cssinjs";
 import Router from "./router";
+import { getRoutesApi } from "./api/auth";
 
 const App: React.FC = () => {
   const { antdLang } = useLang();
@@ -16,6 +17,17 @@ const App: React.FC = () => {
   const [theme] = useState<ThemeConfig>(defaultTheme);
 
   const { getGlobalSpan, globalDelay, globalTip } = useSpinStore();
+  const { setMenuRouters } = useRoutesStore();
+
+  useEffect(() => {
+    const getRoutes = async () => {
+      const routesRes = await getRoutesApi();
+      if (routesRes.code === 200) {
+        setMenuRouters(routesRes.data);
+      }
+    };
+    getRoutes();
+  }, [setMenuRouters]);
 
   return (
     <StyleProvider layer>

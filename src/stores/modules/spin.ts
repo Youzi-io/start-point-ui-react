@@ -30,4 +30,6 @@ const useSpinStore = create<SpinState>((set, get) => ({
   localTip: "加载中...",
 }));
 
+export const setLocalSpan = useSpinStore.getState().setLocalSpan;
+
 export default useSpinStore;
