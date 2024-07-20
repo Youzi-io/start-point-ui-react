@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { message as AMessage } from "antd";
-import { clearToken, getToken, SpinState, useSpinStore } from "@/stores";
+import { clearToken, getToken, setLocalSpan } from "@/stores";
 
 interface Options {
   // 是否开启取消重复请求, 默认为 true
@@ -22,7 +22,7 @@ interface Options {
 }
 
 interface LoadingInstance {
-  target: SpinState | null;
+  target: (() => void) | ((data: boolean) => void) | null;
   count: number;
 }
 
@@ -90,8 +90,8 @@ export default function createAxios<T>(
       if (options.loading) {
         loadingInstance.count++;
         if (loadingInstance.count === 1) {
-          loadingInstance.target = useSpinStore();
-          loadingInstance.target.setLocalSpan(true);
+          loadingInstance.target = setLocalSpan;
+          loadingInstance.target(true);
         }
       }
       // 携带token
@@ -250,7 +250,7 @@ function closeLoading(options: Options) {
   if (options.loading && loadingInstance.count > 0) loadingInstance.count--;
   if (loadingInstance.count === 0) {
     if (loadingInstance.target) {
-      loadingInstance.target.setLocalSpan(false);
+      loadingInstance.target(false);
     }
     loadingInstance.target = null;
   }
